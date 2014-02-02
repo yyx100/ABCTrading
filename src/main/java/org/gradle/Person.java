@@ -6,9 +6,18 @@ public class Person {
     private final String name;
     private final String sex = null; 
     private int age = 0;
+    private String phone = null;
     
 
-    public int getAge() {
+    public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public int getAge() {
 		return age;
 	}
 
