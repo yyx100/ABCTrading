@@ -7,6 +7,7 @@ public class Person {
     private final String sex = null; 
     private int age = 0;
     private String phone = null;
+    private String vpn = null;
     
 
     public String getPhone() {
@@ -36,5 +37,13 @@ public class Person {
 
 	public String getSex() {
 		return sex;
+	}
+
+	public String getVpn() {
+		return vpn;
+	}
+
+	public void setVpn(String vpn) {
+		this.vpn = vpn;
 	}
 }
