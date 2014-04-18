@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<beans profile="dev">
+	
+		<bean id="appConfig" name="appConfig" class="com.agilebc.data.config.ApplicationEnvConfig" 
+			p:serverType="dev" 	/>
+	
+		<bean id="cryptsyExchange" name="cryptsyExchange" class="com.agilebc.data.config.CryptoCCYExchange" 
+			p:exchName="cryptsy" 
+			p:login-ref="cryptsyUser"
+			p:serverUrl="http://pubapi.cryptsy.com/api.php"
+			p:serverPort="80"
+			p:serverSSLUrl="https://api.cryptsy.com/api"
+			p:serverSSLPort="443"
+			p:exchFee-ref="cryptsyFee"
+		/>
+	
+		<bean id="cryptsyUser" name="cryptsyUser" class="com.agilebc.data.config.UserCredential" />
+		<bean id="cryptsyFee" name="cryptsyFee" class="com.agilebc.data.trade.ExchangeFee"
+			p:ratioBuyFee	="0.002"
+			p:ratioSellFee	="0.003" />
+	
+	</beans>
+</beans>

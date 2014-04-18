@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	
+	<bean id="singleExchangeArbitrage" name="singleExchangeArbitrage" class="com.agilebc.data.config.StrategyConfig"
+		p:exeExch-ref="cryptsyExchange"
+		p:tradeCrt-ref="seaTradeCrt"
+		p:tradingBehaviorName="AQF"
+		p:strategyName="singleExchangeArbitrage"
+		p:stratPoolName="singleExchgArbiPool"
+		p:stratCntlrName="singleExchgArbiCntlr"
+		p:serverPort="15701" 
+		p:maxThreads="100"
+		p:shutDownToken="XXX" 		/>
+	
+	
+	<bean id="singleExchgArbiPool" name="singleExchgArbiPool" class="com.agilebc.trading.sea.data.SingleExchgArbiPool" 
+		c:root-ref="seaRootCoin"
+		c:criteria-ref="seaTradeCrt" 
+		c:stratConfig="#{singleExchangeArbitrage}"	/>
+		
+	<bean id="singleExchgArbiCntlr" name="singleExchgArbiCntlr" class="com.agilebc.trading.sea.SingleExchgArbiControllerImpl" 
+		p:stratConfig-ref="singleExchangeArbitrage"	/>
+
+	<!-- define the root coin (the coin to use as base) -->		
+	<bean id="seaRootCoin" name="seaRootCoin" class="com.agilebc.data.trade.Coin" 
+		c:coinName="BitCoin"
+		c:coinSym="BTC"	/>
+
+	<!-- trading criteria config -->
+	<bean id="seaTradeCrt" name="seaTradeCrt" class="com.agilebc.data.trade.TradingCriteria"
+		p:maxLinkLength="4"
+		p:minTradePrice="0"
+		p:minTradeVolume="0"
+		p:orderDepthBuffer="1" />
+	
+	<bean id="seaStartOrder" name="seaStartOrder" class="com.agilebc.data.trade.TradeGenUnitOrder" 
+		p:orderBookDepth="0"
+		p:price="0"
+		p:quantity="1"
+		p:total="0" />
+	
+	
+
+</beans>
