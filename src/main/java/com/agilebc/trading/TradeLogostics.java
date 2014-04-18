@@ -5,7 +5,7 @@ import java.util.Collection;
 import com.agilebc.data.trade.Coin;
 import com.agilebc.data.trade.LinkedCoinElm;
 import com.agilebc.data.trade.TradePair;
-import com.agilebc.data.trade.LinkedCoinCriteria;
+import com.agilebc.data.trade.TradingCriteria;
 
 public class TradeLogostics {
 
@@ -16,7 +16,7 @@ public class TradeLogostics {
 	 * @param filter
 	 * @return the head of all possible trade chain
 	 */
-	public Collection<LinkedCoinElm> constructTradeChain (Coin root, TradePair tpairs, LinkedCoinCriteria filter) {
+	public Collection<LinkedCoinElm> constructTradeChain (Coin root, TradePair tpairs, TradingCriteria filter) {
 		Collection<LinkedCoinElm> arbiPool = null;
 		
 		

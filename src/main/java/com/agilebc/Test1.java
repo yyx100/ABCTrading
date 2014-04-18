@@ -1,43 +1,31 @@
 package com.agilebc;
 
+import gnu.trove.list.array.TDoubleArrayList;
+import gnu.trove.map.TDoubleDoubleMap;
+import gnu.trove.map.hash.TDoubleDoubleHashMap;
+
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.agilebc.data.trade.SingleExchgArbiPool;
+import com.agilebc.trading.sea.data.SingleExchgArbiPool;
 
 public class Test1 {
 	public static Logger applog = LoggerFactory.getLogger(Test1.class);
 
 	
 	public static void main(String[] args) {
-		Set<String> test = new HashSet<String>();
-		test.add("A");
-		test.add("B");
-		test.add("C");
+	
+		HashMap test =new HashMap(3000);
 		
-		/*
-		for (String x: test) {
-			if (x.equals("A")) {
-				test.remove(x);
-			}
-		}
-		*/
+		applog.info("HashMap size: {}", test.size());
 		
-		Iterator<String> it = test.iterator();
-		while (it.hasNext()) {
-			String cur = it.next();
-			if (cur.equals("A") || true) {
-				it.remove();
-			}
-			
-			applog.info(" ===> current size={}, set:{}", test.size(), test);
-		}
-		
-		applog.info("===> the output is:{}", test);
 	}
 
 }

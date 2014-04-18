@@ -13,11 +13,11 @@ public abstract class CccyExchgDao {
 	
 	protected CryptoCCYExchange exchange = null;
 	
+	public CccyExchgDao (CryptoCCYExchange exch) {
+		this.exchange = exch;
+	}
 
-	public abstract void getOrderBook (Tradable tradePair);
-	public abstract String getAllOrderBooks();
-	
-	
+
 	
 	public CryptoCCYExchange getExchange() {
 		return exchange;

@@ -2,9 +2,9 @@ package com.agilebc.data.trade;
 
 import java.util.Date;
 
-import com.agilebc.data.agilebcdata;
+import com.agilebc.data.AbstractAgilebcData;
 
-public class TradePair extends agilebcdata {
+public class TradePair extends AbstractAgilebcData {
 
 	/**
 	 * internal ID for trade pair.  ID is composed of: PRIMARY_CURR|SECONDARY_CURR
@@ -18,12 +18,14 @@ public class TradePair extends agilebcdata {
 	private double lastPrice = 0;
 	private double volume = 0;
 	private Date lastTradeTime = null;
+	private OrderBook orderBk = null;
 	
-	public TradePair (String pairId, String externalId, Coin primary, Coin secondary ) {
-		this.pairId = pairId;
+	
+	public TradePair (String externalId, Coin primary, Coin secondary ) {
 		this.externalId = externalId;
 		this.primary = primary;
 		this.secondary = secondary;
+		this.pairId = createPairId(primary, secondary);
 	}
 	
 	
@@ -33,7 +35,10 @@ public class TradePair extends agilebcdata {
 	}
 	
 	
-	
+	public static String createPairId (Coin primCoin, Coin secdCoin) {
+		StringBuffer mktPair = new StringBuffer(primCoin.getCoinSym()).append("|").append(secdCoin.getCoinSym());
+		return mktPair.toString();
+	}
 	
 	public String getPairId() {
 		return pairId;
@@ -78,6 +83,16 @@ public class TradePair extends agilebcdata {
 
 	public void setExternalId(String externalId) {
 		this.externalId = externalId;
+	}
+
+
+	public OrderBook getOrderBk() {
+		return orderBk;
+	}
+
+
+	public void setOrderBk(OrderBook orderBk) {
+		this.orderBk = orderBk;
 	}
 
 	

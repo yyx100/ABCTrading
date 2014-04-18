@@ -8,14 +8,17 @@ import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.agilebc.data.agilebcdata;
+import com.agilebc.data.AbstractAgilebcData;
 import com.agilebc.data.trade.Coin;
+import com.agilebc.data.trade.OrderBook;
+import com.agilebc.data.trade.OrderDepth;
 import com.agilebc.data.trade.TradePair;
-import com.agilebc.data.trade.LinkedCoinCriteria;
+import com.agilebc.data.trade.TradingCriteria;
 import com.agilebc.data.trade.UnifiedMarketData;
+import com.agilebc.util.TradeType;
 import com.google.gson.annotations.SerializedName;
 
-public class CryptsyAllMarkets extends agilebcdata implements UnifiedMarketData {
+public class CryptsyAllMarkets extends AbstractAgilebcData implements UnifiedMarketData {
 	Pattern cpsyDeliP = Pattern.compile("\\/");
 
 	
@@ -33,16 +36,36 @@ public class CryptsyAllMarkets extends agilebcdata implements UnifiedMarketData 
 			if (mkts != null) {
 				rt = new HashSet<TradePair>(mkts.size());
 				for(String cryptKey : mkts.keySet()) {
-					Matcher cpsyDeliM = cpsyDeliP.matcher(cryptKey);
-					String interId = cpsyDeliM.replaceFirst("|");
 					Market mkt = mkts.get(cryptKey);
 					Coin prim = new Coin (mkt.getPrimarycode(), mkt.getPrimaryname());
 					Coin secd = new Coin (mkt.getSecondarycode(), mkt.getSecondaryname());
+
+					//---- take care of current market's order books ----
+					OrderBook currMktBk = new OrderBook();
+					ArrayList<CryptsyOrderBookElem> ordbkelms = mkt.getBuyorders();
 					
-					TradePair thisPair = new TradePair(interId, mkt.getMarketid(), prim, secd);
+					OrderDepth buyDep = new OrderDepth(TradeType.BUY);
+					if (ordbkelms!=null) {
+						for (CryptsyOrderBookElem elm : ordbkelms) {
+							buyDep.addOrder(elm.getPrice(), elm.getQuantity());
+						}
+					}
+					
+					OrderDepth sellDep = new OrderDepth(TradeType.SELL);
+					ordbkelms = mkt.getSellorders();
+					if (ordbkelms != null) {
+						for (CryptsyOrderBookElem elm : ordbkelms) {
+							sellDep.addOrder(elm.getPrice(), elm.getQuantity());
+						}
+					}
+					currMktBk.addOrderDepth(buyDep);
+					currMktBk.addOrderDepth(sellDep);
+					
+					TradePair thisPair = new TradePair( mkt.getMarketid(), prim, secd);
 					thisPair.setLastPrice(mkt.getLasttradeprice());
 					thisPair.setLastTradeTime(mkt.getLasttradetime());
 					thisPair.setVolume(mkt.getVolume());
+					thisPair.setOrderBk(currMktBk);
 					
 					rt.add(thisPair);
 				}
@@ -79,8 +102,8 @@ public class CryptsyAllMarkets extends agilebcdata implements UnifiedMarketData 
 		private String secondaryname	= null; //": "PrimeCoin",
 		private String secondarycode	= null; //": "XPM",
 		private ArrayList<TradeElem> recenttrades		= null;
-		private ArrayList<OrderBookElem> sellorders = null;
-		private ArrayList<OrderBookElem> buyorders = null;
+		private ArrayList<CryptsyOrderBookElem> sellorders = null;
+		private ArrayList<CryptsyOrderBookElem> buyorders = null;
 		
 		public String getMarketid() {
 			return marketid;
@@ -142,16 +165,16 @@ public class CryptsyAllMarkets extends agilebcdata implements UnifiedMarketData 
 		public void setRecenttrades(ArrayList<TradeElem> recenttrades) {
 			this.recenttrades = recenttrades;
 		}
-		public ArrayList<OrderBookElem> getSellorders() {
+		public ArrayList<CryptsyOrderBookElem> getSellorders() {
 			return sellorders;
 		}
-		public void setSellorders(ArrayList<OrderBookElem> sellorders) {
+		public void setSellorders(ArrayList<CryptsyOrderBookElem> sellorders) {
 			this.sellorders = sellorders;
 		}
-		public ArrayList<OrderBookElem> getBuyorders() {
+		public ArrayList<CryptsyOrderBookElem> getBuyorders() {
 			return buyorders;
 		}
-		public void setBuyorders(ArrayList<OrderBookElem> buyorders) {
+		public void setBuyorders(ArrayList<CryptsyOrderBookElem> buyorders) {
 			this.buyorders = buyorders;
 		}
 	}
@@ -195,7 +218,7 @@ public class CryptsyAllMarkets extends agilebcdata implements UnifiedMarketData 
 		}
 	}
 	
-	public static class OrderBookElem {
+	public static class CryptsyOrderBookElem {
 		Double price = null;
 		Double quantity = null;
 		Double total = null;

@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
 import com.agilebc.data.config.ServerEnvType;
@@ -19,18 +21,28 @@ public class GenericConfigLoader {
 
 	public final static boolean _DEBUG = false;
 	public final static Logger applog = LoggerFactory.getLogger(GenericConfigLoader.class);
-	
+
 	public final static String _SPRING_PROF = "spring.profiles.active"; 	
-			
+	public final static String _SPRING_CONF = "spring/AgileBusinessCenterConfig.xml";
+	public final static String _ABC_TRADE_EXCH = "com.agilebc.exchange";
 	
-	private final static GenericConfigLoader configService = new GenericConfigLoader();
+	public final static String _CACHE_TRADEPAIR = "tradePair";
+	public final static String _PREFIX_EXCHANGE = "com.exch";
+	
+	private static GenericConfigLoader configService = null;
 	
 	//--- instance variables ----
 	private String myCurrServer = null;
 	private ServerEnvType myCurrEnv = ServerEnvType.dev; //default to dev
 	private Properties envs = null;
 	
-	public static GenericConfigLoader getInstance () {
+	private Pattern ptnExch = Pattern.compile(_PREFIX_EXCHANGE+ "\\.(\\w+?)\\.(\\S*)?$");
+
+	public synchronized static GenericConfigLoader getInstance () {
+		if (configService == null) {
+			configService = new GenericConfigLoader();
+		}
+		
 		return configService;
 	}
 	
@@ -48,11 +60,11 @@ public class GenericConfigLoader {
 			e.printStackTrace();
 		}
 		
-		GenericXmlApplicationContext tx = new GenericXmlApplicationContext();
 		applog.info("***===============================================================================================***");
 		applog.info("***==Service Started In:[{}]============================================***", myCurrEnv);
 		applog.info("***===============================================================================================***");
 	}
+	
 	
 	
 	public static Properties loadInJarProperties (String pkgName) throws IOException {
@@ -94,7 +106,23 @@ public class GenericConfigLoader {
 	}
 	
 	
-	
+	/**
+	 *   a utitlity method to parse out the exchange name from the cachen name, which is in format
+	 *   of com.exch.(exchange_name).cache_name
+	 * @param cacheName
+	 * @return
+	 */
+	public String getCacheExchange (String cacheName) {
+		Matcher m = ptnExch.matcher(cacheName);
+		if (m.matches()) {
+			return m.group(1);
+		}
+		else {
+			return null;
+		}
+		
+		
+	}
 	
 	
 	@Override

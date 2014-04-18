@@ -2,7 +2,7 @@ package com.agilebc.data;
 
 import com.agilebc.util.StringUtils;
 
-public class agilebcdata {
+public class AbstractAgilebcData {
 
 	@Override
 	public String toString () {

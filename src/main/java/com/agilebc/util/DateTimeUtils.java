@@ -13,12 +13,16 @@ public class DateTimeUtils {
 	public static GenericConfigLoader appConf = GenericConfigLoader.getInstance();
 	public static Logger applog = LoggerFactory.getLogger(DateTimeUtils.class);
 	
-	public final static SimpleDateFormat df01 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //2014-02-24 21:47:18
+	public final static String _dfstr01 = "yyyy-MM-dd HH:mm:ss"; //2014-02-24 21:47:18
 	
+	/**
+	 * 
+	 * @param dateStr "yyyy-MM-dd HH:mm:ss" //2014-02-24 21:47:18
+	 * @return
+	 */
 	public final static Date StringToDate01 (String dateStr) {
-		return String2Date(df01, dateStr);
+		return String2Date(new SimpleDateFormat(_dfstr01), dateStr);
 	}
-	
 	
 	
 	public static Date String2Date(SimpleDateFormat df, String dateStr) {
@@ -35,7 +39,7 @@ public class DateTimeUtils {
 	
 	
 	public static void main (String[] argv) {
-		Date test = String2Date(df01, "2014-02-24 21:47:18");
-		applog.info("out put date:{}", test);
+		//Date test = String2Date(df01, "2014-02-24 21:47:18");
+		//applog.info("out put date:{}", test);
 	}
 }

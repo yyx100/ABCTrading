@@ -1,6 +1,6 @@
 package com.agilebc.data.trade;
 
-public class Fee {
+public class ExchangeFee {
 	
 	private double ratioBuyFee 		= 0.002;
 	private double ratioSellFee 	= 0.003;

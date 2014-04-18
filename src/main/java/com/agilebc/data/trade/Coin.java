@@ -1,6 +1,8 @@
 package com.agilebc.data.trade;
 
-public class Coin {
+import com.agilebc.data.AbstractAgilebcData;
+
+public class Coin extends AbstractAgilebcData {
 
 	private String coinSym = null;
 	private String coinName = null;

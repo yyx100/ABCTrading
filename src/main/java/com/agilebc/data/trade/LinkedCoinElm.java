@@ -1,20 +1,23 @@
 package com.agilebc.data.trade;
 
-import com.agilebc.data.agilebcdata;
-import com.agilebc.util.TradeDirection;
+import com.agilebc.data.AbstractAgilebcData;
+import com.agilebc.util.TradeType;
 
-public class LinkedCoinElm  extends agilebcdata {
-	private Coin rootCoin = null;
-	private Coin currCoin = null;  // current coin
+public class LinkedCoinElm  extends AbstractAgilebcData {
+	protected Coin rootCoin = null;
+	protected Coin currCoin = null;  // current coin
+
+	protected LinkedCoinElm prevCoinElm = null;
+	protected LinkedCoinElm nextCoinElm = null;
+	protected TradeType nextAction = null;
 	
-	private LinkedCoinElm prevCoinElm = null;
-	private LinkedCoinElm nextCoinElm = null;
-	private TradeDirection nextAction = null;
-	
-	/**@para chainlength is not calculate until the end of chain has been determined. */
+	/**@param chain length is not calculate until the end of chain has been determined, 
+	 * then updated for all elements with the same chain length.  
+	 * coin length includes all elements in the chain, including head and tails */
 	private int chainLength = -1; 
+	/**@param seqId is the sequence id of the element in a chain.  It starts at 0 */
 	private int seqId = 0;
-	
+	private String chainStr = null;
 	
 	public LinkedCoinElm (Coin root, Coin currCoin) {
 		this.rootCoin = root;
@@ -22,7 +25,7 @@ public class LinkedCoinElm  extends agilebcdata {
 	}
 	
 	/**
-	 *    this datastructure isn't a cicurlar structure.  what is method is detecting is merely if starting coin is same as the ending coin
+	 *    this data structure isn't a circular structure.  what is method is detecting is merely if starting coin is same as the ending coin
 	 * @return
 	 */
 	public boolean isFullCircled () {
@@ -72,7 +75,7 @@ public class LinkedCoinElm  extends agilebcdata {
 	 * @param newCoin
 	 * @return
 	 */
-	public LinkedCoinElm insertNextCoin (Coin newCoin, TradeDirection action) {
+	public LinkedCoinElm insertNextCoin (Coin newCoin, TradeType action) {
 		LinkedCoinElm next = this.cloneShallow();
 		next.setCurrCoin(newCoin);
 		this.setNextCoinElm(next);
@@ -120,6 +123,28 @@ public class LinkedCoinElm  extends agilebcdata {
 	}
 	
 	
+	/**
+	 *   determines if this link is linked to an other link.
+	 * @return
+	 */
+	public boolean hasNext() {
+		return (nextCoinElm == null) ? false : true;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public LinkedCoinElm getTail () {
 		if (isTail()) {
 			return this;
@@ -146,13 +171,7 @@ public class LinkedCoinElm  extends agilebcdata {
 		this.rootCoin = rootCoin;
 	}
 
-	public Coin getCurrCoin() {
-		return currCoin;
-	}
 
-	public void setCurrCoin(Coin currCoin) {
-		this.currCoin = currCoin;
-	}
 
 	public LinkedCoinElm getNextCoinElm() {
 		return nextCoinElm;
@@ -167,11 +186,11 @@ public class LinkedCoinElm  extends agilebcdata {
 		}
 	}
 
-	public TradeDirection getNextAction() {
+	public TradeType getNextAction() {
 		return nextAction;
 	}
 
-	public void setNextAction(TradeDirection nextAction) {
+	public void setNextAction(TradeType nextAction) {
 		this.nextAction = nextAction;
 	}
 
@@ -202,5 +221,20 @@ public class LinkedCoinElm  extends agilebcdata {
 	public void setChainLength(int chainLength) {
 		this.chainLength = chainLength;
 	}
+	
+	public Coin getCurrCoin() {
+		return currCoin;
+	}
 
+	public void setCurrCoin(Coin currCoin) {
+		this.currCoin = currCoin;
+	}
+
+	public String getChainStr() {
+		return chainStr;
+	}
+
+	public void setChainStr(String chainStr) {
+		this.chainStr = chainStr;
+	}
 }

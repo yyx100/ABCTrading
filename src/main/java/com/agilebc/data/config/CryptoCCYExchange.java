@@ -1,7 +1,12 @@
 package com.agilebc.data.config;
 
+import com.agilebc.data.trade.ExchangeFee;
+
 
 public class CryptoCCYExchange {
+	
+	private String 	exchName = null;
+	private int		exchId = -1;
 	
 	private String 	serverUrl 	= null;
 	private int 	serverPort	= 80;
@@ -9,9 +14,8 @@ public class CryptoCCYExchange {
 	private String 	serverSSLUrl 	= null;
 	private int 	serverSSLPort	= 443;
 
-
 	private UserCredential login = null;
-
+	private ExchangeFee exchFee = null;
 
 	public String getServerUrl() {
 		return serverUrl;
@@ -61,6 +65,38 @@ public class CryptoCCYExchange {
 	public void setLogin(UserCredential login) {
 		this.login = login;
 	}
+
+
+	public ExchangeFee getExchFee() {
+		return exchFee;
+	}
+
+
+	public void setExchFee(ExchangeFee exchFee) {
+		this.exchFee = exchFee;
+	}
+
+
+	public String getExchName() {
+		return exchName;
+	}
+
+
+	public void setExchName(String exchName) {
+		this.exchName = exchName;
+	}
+
+
+	public int getExchId() {
+		return exchId;
+	}
+
+
+	public void setExchId(int exchId) {
+		this.exchId = exchId;
+	}
+
+
 	
 	
 

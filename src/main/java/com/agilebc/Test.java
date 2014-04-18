@@ -12,9 +12,10 @@ import org.slf4j.LoggerFactory;
 
 import com.agilebc.data.proprietary.CryptsyAllMarkets;
 import com.agilebc.data.trade.Coin;
-import com.agilebc.data.trade.LinkedCoinCriteria;
-import com.agilebc.data.trade.SingleExchgArbiPool;
-import com.agilebc.feed.dao.rest.CccyExchgDaoCryptsyImpl;
+import com.agilebc.data.trade.TradingCriteria;
+import com.agilebc.data.trade.TradePair;
+import com.agilebc.feed.dao.rest.CryptsyDaoImpl;
+import com.agilebc.trading.sea.data.SingleExchgArbiPool;
 import com.agilebc.util.DateTimeUtils;
 import com.agilebc.util.config.GenericConfigLoader;
 import com.google.gson.Gson;
@@ -40,9 +41,9 @@ public class Test {
 			}
 			
 		};
-		CccyExchgDaoCryptsyImpl cryptsy = new CccyExchgDaoCryptsyImpl();
+		//CryptsyDaoImpl cryptsy = new CryptsyDaoImpl();
 		String cStr = null;
-		cStr = cryptsy.getAllOrderBooks();
+		//cStr = cryptsy.getAllOrderBooks();
 		
 		try {
 			BufferedReader bfRead = null;
@@ -60,12 +61,12 @@ public class Test {
 			Gson gsDe = new  GsonBuilder().registerTypeAdapter(Date.class, cryptsyDate).create();
 			CryptsyAllMarkets mkts = gsDe.fromJson(cStr, CryptsyAllMarkets.class);
 			
-			Collection tradePairs = mkts.getAllTradePairs();
+			Collection<TradePair> tradePairs = mkts.getAllTradePairs();
 			//applog.info("====> output: {}", tradePairs);
 			
-			SingleExchgArbiPool seap = new SingleExchgArbiPool(new Coin("BTC", "BitCoin"), tradePairs, null);
-			Set<String> tradePathIds = seap.getAllTradePathIds();
-			applog.info("====>  Identified Trade Path: \n{}", tradePathIds);
+			//SingleExchgArbiPool seap = new SingleExchgArbiPool(new Coin("BTC", "BitCoin"), tradePairs, null);
+			//Set<String> tradePathIds = seap.getAllTradePathIds();
+			//applog.info("====>  Identified Trade Path: \n{}", tradePathIds);
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
