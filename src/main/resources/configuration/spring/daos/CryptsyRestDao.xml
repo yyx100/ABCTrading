@@ -8,4 +8,5 @@
 		<bean id="cryptsyDao" name="cryptsyDao" class="com.agilebc.feed.dao.rest.CryptsyDaoImpl" scope="prototype" 		
 			c:exch-ref="cryptsyExchange" />
 
+
 </beans>

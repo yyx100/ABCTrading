@@ -17,8 +17,8 @@
 	
 	<context:annotation-config />
 	
-	<!-- EhCache config -->
-	<bean id="abcCacheMan" name="abcCacheMan" class="org.springframework.cache.ehcache.EhCacheCacheManager" p:cache-manager-ref="ehcache"/>
+	<!-- exchangeServiceCacheMan EhCache config -->
+	<bean id="exchangeServiceCacheMan" name="exchangeServiceCacheMan" class="org.springframework.cache.ehcache.EhCacheCacheManager" p:cache-manager-ref="ehcache"/>
 	<!-- EhCache library setup -->
 	<bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" p:config-location="ehcache/abctrading-ehcache.xml"/>
 	

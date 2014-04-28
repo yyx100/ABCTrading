@@ -1,5 +1,9 @@
 package com.agilebc.data.trade;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.agilebc.data.vo.WorkQueue;
 import com.agilebc.util.TradeType;
 
 import gnu.trove.list.TDoubleList;
@@ -8,6 +12,7 @@ import gnu.trove.map.TDoubleDoubleMap;
 import gnu.trove.map.hash.TDoubleDoubleHashMap;
 
 public class OrderDepth {
+	public static Logger applog = LoggerFactory.getLogger(OrderDepth.class);
 
 	private TradeType tradeDirection = null;
 	private TDoubleDoubleMap orderDepth = new TDoubleDoubleHashMap();
@@ -38,8 +43,12 @@ public class OrderDepth {
 	 * @return orderbook element
 	 */
 	public OrderBookElm getBookElementAt (int index) {
+		int psize = priceRef.size() -1;
 		if (! sorted) {
 			sort();
+		}
+		if (index < 1) { // added for dummy - when you mistake first element to be 0 instead of 1.
+			index = 1;
 		}
 		
 		int offsetIdx = 1;
@@ -50,8 +59,16 @@ public class OrderDepth {
 			offsetIdx = index - offsetIdx;
 		}
 		
-		double tgtPrice = priceRef.get(offsetIdx);
-		 return new OrderBookElm(tgtPrice, orderDepth.get(tgtPrice));
+		if (psize > 0 && psize >= offsetIdx ) {
+			//applog.info("=====OrderDepth fetching [{}] {}/{}", tradeDirection.getTradeTypeSym(), offsetIdx, psize);
+			double tgtPrice = priceRef.get(offsetIdx);
+			return new OrderBookElm(tgtPrice, orderDepth.get(tgtPrice));
+		}
+		else {
+			//applog.warn("=====OrderDepth fetching [!EMPTY!] PRICE [{}] {}/{}", tradeDirection.getTradeTypeSym(), offsetIdx, psize);
+		}
+		
+		return null;
 	}
 
 	public TradeType getTradeDirection() {

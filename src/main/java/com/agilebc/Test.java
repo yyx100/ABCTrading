@@ -61,7 +61,7 @@ public class Test {
 			Gson gsDe = new  GsonBuilder().registerTypeAdapter(Date.class, cryptsyDate).create();
 			CryptsyAllMarkets mkts = gsDe.fromJson(cStr, CryptsyAllMarkets.class);
 			
-			Collection<TradePair> tradePairs = mkts.getAllTradePairs();
+			//Collection<TradePair> tradePairs = mkts.getAllTradePairs();
 			//applog.info("====> output: {}", tradePairs);
 			
 			//SingleExchgArbiPool seap = new SingleExchgArbiPool(new Coin("BTC", "BitCoin"), tradePairs, null);

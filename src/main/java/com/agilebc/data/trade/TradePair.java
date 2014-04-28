@@ -3,6 +3,7 @@ package com.agilebc.data.trade;
 import java.util.Date;
 
 import com.agilebc.data.AbstractAgilebcData;
+import com.agilebc.util.TradeType;
 
 public class TradePair extends AbstractAgilebcData {
 
@@ -38,6 +39,35 @@ public class TradePair extends AbstractAgilebcData {
 	public static String createPairId (Coin primCoin, Coin secdCoin) {
 		StringBuffer mktPair = new StringBuffer(primCoin.getCoinSym()).append("|").append(secdCoin.getCoinSym());
 		return mktPair.toString();
+	}
+	
+	
+	@Override
+	public String toString() {
+		StringBuffer bf = new StringBuffer("{").append(getPairId());
+		OrderBook bk = getOrderBk();
+		if (bk != null) {
+			OrderBookElm buy = bk.getBookElementAt(TradeType.BUY, 1);
+			OrderBookElm sell = bk.getBookElementAt(TradeType.SELL, 1);
+			if (buy != null) {
+				bf.append(": [BUY: ").append(buy.getPrice()).append(" X ").append(buy.getQuantity());
+			}
+			else {
+				bf.append(": [BUY: ").append("-?-").append(" X ").append("-?-");
+			}
+			
+			if (sell != null) {
+				bf.append(" | SELL: ").append(sell.getPrice()).append(" X ").append(sell.getQuantity()).append("]");
+			}
+			else {
+				bf.append(" | SELL: ").append("-?-").append(" X ").append("-?-").append("]");
+			}
+		}
+		else {
+			bf.append(": [!EMPTY!]");
+		}
+		
+		return bf.append("}").toString();
 	}
 	
 	public String getPairId() {

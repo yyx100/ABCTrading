@@ -21,15 +21,34 @@
          timeToIdleSeconds="0"
          timeToLiveSeconds="0">
   </cache>
+
+  <!-- key:String(TradePairId) Value:TradePair -->
+  <cache name="com.agilebc.subscription"
+         maxElementsInMemory="500"
+         maxElementsOnDisk="0"
+         eternal="true"
+         timeToIdleSeconds="0"
+         timeToLiveSeconds="0"  >
+  </cache>
   
+  <!-- key:String(TradePairId) Value:TradePairEnh -->
+  <cache name="com.exch.cryptsy.allmktdata"
+	  	eternal="true"
+	  	maxElementsInMemory="99999"
+	  	timeToIdleSeconds="0"
+	    timeToLiveSeconds="0"  	>
+  	<cacheEventListenerFactory class="com.agilebc.cache.AbcCacheEventListenerFactory" />
+	<cacheDecoratorFactory class="com.agilebc.cache.AbcCacheDecoratorFactory" properties="refresh=600000,threads=1" />
+  </cache>
+
+  <!-- key:String(TradePairId) Value:TradePair -->
   <cache name="com.exch.cryptsy.orderdepth"
 	  	eternal="false"
 	  	maxElementsInMemory="99999"
 	  	timeToIdleSeconds="0"
-	    timeToLiveSeconds="3"  	>
+	    timeToLiveSeconds="10"  	>
   	<cacheEventListenerFactory class="com.agilebc.cache.AbcCacheEventListenerFactory" />
-	<cacheDecoratorFactory class="com.agilebc.cache.AbcCacheDecoratorFactory" properties="refresh=1000,threads=3" />
+	<cacheDecoratorFactory class="com.agilebc.cache.AbcCacheDecoratorFactory" properties="refresh=1000,threads=5" />
   </cache>
-  
   
 </ehcache>

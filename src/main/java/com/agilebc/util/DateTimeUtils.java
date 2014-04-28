@@ -15,6 +15,7 @@ public class DateTimeUtils {
 	
 	public final static String _dfstr01 = "yyyy-MM-dd HH:mm:ss"; //2014-02-24 21:47:18
 	
+	
 	/**
 	 * 
 	 * @param dateStr "yyyy-MM-dd HH:mm:ss" //2014-02-24 21:47:18
@@ -23,6 +24,16 @@ public class DateTimeUtils {
 	public final static Date StringToDate01 (String dateStr) {
 		return String2Date(new SimpleDateFormat(_dfstr01), dateStr);
 	}
+	
+	/**
+	 * @param Date
+	 * @return dateStr "yyyy-MM-dd HH:mm:ss" //2014-02-24 21:47:18
+	 */
+	public final static String DateToString01 (Date date) {
+		return Date2String(new SimpleDateFormat(_dfstr01), date);
+	}
+	
+	
 	
 	
 	public static Date String2Date(SimpleDateFormat df, String dateStr) {
@@ -38,8 +49,13 @@ public class DateTimeUtils {
 	}
 	
 	
-	public static void main (String[] argv) {
-		//Date test = String2Date(df01, "2014-02-24 21:47:18");
-		//applog.info("out put date:{}", test);
+	public static String Date2String (SimpleDateFormat df, Date date) {
+		String rt = null;
+		rt =  df.format(date);
+		
+		return rt;
 	}
+	
+	
+
 }

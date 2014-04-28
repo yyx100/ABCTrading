@@ -6,8 +6,7 @@
 	
 	<beans profile="dev">
 	
-		<bean id="appConfig" name="appConfig" class="com.agilebc.data.config.ApplicationEnvConfig" 
-			p:serverType="dev" 	/>
+		<bean id="appConfig" name="appConfig" class="com.agilebc.data.config.ApplicationEnvConfig" p:serverType="dev" 	/>
 	
 		<bean id="cryptsyExchange" name="cryptsyExchange" class="com.agilebc.data.config.CryptoCCYExchange" 
 			p:exchName="cryptsy" 
@@ -19,7 +18,12 @@
 			p:exchFee-ref="cryptsyFee"
 		/>
 	
-		<bean id="cryptsyUser" name="cryptsyUser" class="com.agilebc.data.config.UserCredential" />
+		<bean id="cryptsyUser" name="cryptsyUser" class="com.agilebc.data.config.UserCredential" 
+			p:tradeKey	="7e24ead7d7f3c341b25f0365362b7910f27a8f32"
+			p:pgpPub	="7e24ead7d7f3c341b25f0365362b7910f27a8f32"
+			p:pgpPrivate="1c50853af855fe5d8e99111e0d53ea5e6b4354e6544b557c2e5c24e17a488e7d64eba073d51d4624"
+			
+		/>
 		<bean id="cryptsyFee" name="cryptsyFee" class="com.agilebc.data.trade.ExchangeFee"
 			p:ratioBuyFee	="0.002"
 			p:ratioSellFee	="0.003" />

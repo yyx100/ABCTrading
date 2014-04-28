@@ -18,6 +18,12 @@
 		p:shutDownToken="XXX" 		/>
 	
 	
+	
+	
+	<bean id="seaMarketDataService" name="seaMarketDataService" class="com.agilebc.trading.services.MarketDataService"
+		c:exchg="#{singleExchangeArbitrage.exeExch}"
+		c:cachMan-ref="exchangeServiceCacheMan" />
+	
 	<bean id="singleExchgArbiPool" name="singleExchgArbiPool" class="com.agilebc.trading.sea.data.SingleExchgArbiPool" 
 		c:root-ref="seaRootCoin"
 		c:criteria-ref="seaTradeCrt" 

@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +16,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
 import com.agilebc.data.config.ServerEnvType;
+import com.agilebc.data.vo.ExecutionState;
+import com.agilebc.data.vo.OperationStat;
 import com.agilebc.util.StringUtils;
 
 public class GenericConfigLoader {
@@ -22,22 +25,26 @@ public class GenericConfigLoader {
 	public final static boolean _DEBUG = false;
 	public final static Logger applog = LoggerFactory.getLogger(GenericConfigLoader.class);
 
+	public final static TimeZone _DEFAUKT_TIMEZONE = TimeZone.getTimeZone("EST"); //default timezone to est, (NY)!
 	public final static String _SPRING_PROF = "spring.profiles.active"; 	
 	public final static String _SPRING_CONF = "spring/AgileBusinessCenterConfig.xml";
-	public final static String _ABC_TRADE_EXCH = "com.agilebc.exchange";
-	
+
+	public final static String _ABC_TRADE_EXCH 	= "com.agilebc.exchange";
+	public final static String _ABC_SUBSCRIBED	= "com.agilebc.subscription";  //this is the cache name for subscribed marketdata in abctrading-ehcache.xml "com.agilebc.subscription";
+
 	public final static String _CACHE_TRADEPAIR = "tradePair";
-	public final static String _PREFIX_EXCHANGE = "com.exch";
 	
+	public final static int _DEFAULT_RETRY_SLEEP = 1000;
+
+	public final static String _PREFIX_EXCHANGE = "com.exch";
 	private static GenericConfigLoader configService = null;
 	
 	//--- instance variables ----
 	private String myCurrServer = null;
 	private ServerEnvType myCurrEnv = ServerEnvType.dev; //default to dev
 	private Properties envs = null;
+	private OperationStat optStat = new OperationStat(ExecutionState.RUN);  //--- default operation status to run state at start.  application can override this value later
 	
-	private Pattern ptnExch = Pattern.compile(_PREFIX_EXCHANGE+ "\\.(\\w+?)\\.(\\S*)?$");
-
 	public synchronized static GenericConfigLoader getInstance () {
 		if (configService == null) {
 			configService = new GenericConfigLoader();
@@ -106,28 +113,21 @@ public class GenericConfigLoader {
 	}
 	
 	
-	/**
-	 *   a utitlity method to parse out the exchange name from the cachen name, which is in format
-	 *   of com.exch.(exchange_name).cache_name
-	 * @param cacheName
-	 * @return
-	 */
-	public String getCacheExchange (String cacheName) {
-		Matcher m = ptnExch.matcher(cacheName);
-		if (m.matches()) {
-			return m.group(1);
-		}
-		else {
-			return null;
-		}
-		
-		
-	}
+
+	
 	
 	
 	@Override
 	public String toString() {
 		return StringUtils.toString(this);
+	}
+
+	public OperationStat getOptStat() {
+		return optStat;
+	}
+
+	public void setOptStat(OperationStat optStat) {
+		this.optStat = optStat;
 	}
 	
 }

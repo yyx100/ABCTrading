@@ -20,10 +20,12 @@ import com.agilebc.data.config.StrategyConfig;
 import com.agilebc.data.trade.Coin;
 import com.agilebc.data.trade.Exchange;
 import com.agilebc.data.trade.StrategyInstancePool;
+import com.agilebc.data.trade.TradePairEnh;
 import com.agilebc.data.trade.TradingCriteria;
 import com.agilebc.data.trade.LinkedCoinElm;
 import com.agilebc.data.trade.TradePair;
 import com.agilebc.feed.dao.ExchangeTradingAPI;
+import com.agilebc.trading.services.MarketDataService;
 import com.agilebc.util.TradeType;
 import com.agilebc.util.config.GenericConfigLoader;
 
@@ -37,19 +39,12 @@ import com.agilebc.util.config.GenericConfigLoader;
  * @author yyx100
  *
  */
-public class SingleExchgArbiPool implements StrategyInstancePool <LinkedCoinElm>, ApplicationContextAware {
+public class SingleExchgArbiPool implements StrategyInstancePool <LinkedCoinElm> {
 	public static GenericConfigLoader appConf = GenericConfigLoader.getInstance();
 	public static Logger applog = LoggerFactory.getLogger(SingleExchgArbiPool.class);
 
-	@Autowired
-	private ApplicationContext ctx = null;
-	@Autowired 
-	private CacheManager abcCacheMan = null;
-	
-	private ExchangeTradingAPI api = null;
-
 	private Coin root = null;
-	private Collection<TradePair> allPairs = new HashSet<TradePair>();
+	private Collection<TradePairEnh> allPairs = new HashSet<TradePairEnh>();
 	private TradingCriteria criteria = null; 
 	
 	private Map <String /*pair_id*/, TradePair> tradePairs = new HashMap<String, TradePair>();
@@ -60,6 +55,7 @@ public class SingleExchgArbiPool implements StrategyInstancePool <LinkedCoinElm>
 	
 	private double _defaultTradeQuantity = 1;
 	private StrategyConfig stratConfig = null;
+	private MarketDataService mktDataSrvc =  null;
 	
 	public SingleExchgArbiPool (StrategyConfig stratConfig, Coin root,  TradingCriteria criteria) {
 		this.stratConfig = stratConfig;
@@ -80,9 +76,7 @@ public class SingleExchgArbiPool implements StrategyInstancePool <LinkedCoinElm>
 	}
 	
 	public synchronized void init () {
-		String daoChoser = stratConfig.getExeExch().getExchName() + "Dao";  
-		this.api = (ExchangeTradingAPI) ctx.getBean(daoChoser); 
-		this.allPairs = api.getAllTradePairs();
+		this.allPairs = mktDataSrvc.getAllMarketTradePairs();
 		
 		//---- initialize market data ---
 		initMarketData();
@@ -278,13 +272,11 @@ public class SingleExchgArbiPool implements StrategyInstancePool <LinkedCoinElm>
 	
 	
 	private void initMarketData() {
-		Cache tpCh = abcCacheMan.getCache(GenericConfigLoader._CACHE_TRADEPAIR);
-		
-		for (TradePair tp: allPairs) {
+		TradePair tp = null;
+		for (TradePairEnh tpenh: allPairs) {
+			tp = tpenh.getTradePair();
 			tradePairs.put(tp.getPairId(), tp);
-						
-			tpCh.put(tp.getPairId(), tp);
-			
+
 			Coin pc = tp.getPrimary();
 			Coin sc = tp.getSecondary();
 			
@@ -339,24 +331,17 @@ public class SingleExchgArbiPool implements StrategyInstancePool <LinkedCoinElm>
 	}
 
 
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
-		this.ctx = applicationContext;
-	}
-
-
 	public String releaseStratInstance(LinkedCoinElm stratInst) {
 		return releaseArbitragePath(stratInst);
 	}
 
-
-	public ApplicationContext getCtx() {
-		return ctx;
+	public MarketDataService getMktDataSrvc() {
+		return mktDataSrvc;
 	}
 
 
-	public void setCtx(ApplicationContext ctx) {
-		this.ctx = ctx;
+	public void setMktDataSrvc(MarketDataService mktDataSrvc) {
+		this.mktDataSrvc = mktDataSrvc;
 	}
 
 

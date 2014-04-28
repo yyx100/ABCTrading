@@ -5,14 +5,18 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.agilebc.data.AbstractAgilebcData;
+import com.agilebc.data.proprietary.CryptsyAllMarkets.CryptsyTradeElem;
 import com.agilebc.data.trade.Coin;
 import com.agilebc.data.trade.OrderBook;
 import com.agilebc.data.trade.OrderDepth;
+import com.agilebc.data.trade.TradeElement;
 import com.agilebc.data.trade.TradePair;
+import com.agilebc.data.trade.TradePairEnh;
 import com.agilebc.data.trade.TradingCriteria;
 import com.agilebc.data.trade.UnifiedMarketData;
 import com.agilebc.util.TradeType;
@@ -21,20 +25,18 @@ import com.google.gson.annotations.SerializedName;
 public class CryptsyAllMarkets extends AbstractAgilebcData implements UnifiedMarketData {
 	Pattern cpsyDeliP = Pattern.compile("\\/");
 
-	
 	private int success = -1;
-	
 	@SerializedName("return")
 	private ReturnSet returnSet = null;
 	
 	
-	public Collection<TradePair> getAllTradePairs() {
-		Collection< TradePair> rt = null;
+	public Collection<TradePairEnh> getAllTradePairs() {
+		Collection<TradePairEnh> rt = null;
 		
 		if (returnSet != null) {
 			HashMap<String, Market> mkts = returnSet.getMarkets();
 			if (mkts != null) {
-				rt = new HashSet<TradePair>(mkts.size());
+				rt = new HashSet<TradePairEnh>(mkts.size());
 				for(String cryptKey : mkts.keySet()) {
 					Market mkt = mkts.get(cryptKey);
 					Coin prim = new Coin (mkt.getPrimarycode(), mkt.getPrimaryname());
@@ -67,7 +69,16 @@ public class CryptsyAllMarkets extends AbstractAgilebcData implements UnifiedMar
 					thisPair.setVolume(mkt.getVolume());
 					thisPair.setOrderBk(currMktBk);
 					
-					rt.add(thisPair);
+					TradePairEnh tph = new TradePairEnh(thisPair);
+					ArrayList<CryptsyTradeElem> rcOrds = mkt.getRecenttrades();
+					if (rcOrds != null && rcOrds.size() > 0) {
+						for (CryptsyTradeElem te : rcOrds) {
+							TradeElement elm = new TradeElement(String.valueOf(te.getId()), te.getPrice(), te.getQuantity(), te.getTotal(), te.getTime());
+							tph.addRecentTrade(elm);
+						}
+					}
+					
+					rt.add(tph);
 				}
 			}
 		}
@@ -101,7 +112,7 @@ public class CryptsyAllMarkets extends AbstractAgilebcData implements UnifiedMar
 		private String primarycode		= null; //": "ASC",
 		private String secondaryname	= null; //": "PrimeCoin",
 		private String secondarycode	= null; //": "XPM",
-		private ArrayList<TradeElem> recenttrades		= null;
+		private ArrayList<CryptsyTradeElem> recenttrades		= null;
 		private ArrayList<CryptsyOrderBookElem> sellorders = null;
 		private ArrayList<CryptsyOrderBookElem> buyorders = null;
 		
@@ -159,12 +170,8 @@ public class CryptsyAllMarkets extends AbstractAgilebcData implements UnifiedMar
 		public void setSecondarycode(String secondarycode) {
 			this.secondarycode = secondarycode;
 		}
-		public ArrayList<TradeElem> getRecenttrades() {
-			return recenttrades;
-		}
-		public void setRecenttrades(ArrayList<TradeElem> recenttrades) {
-			this.recenttrades = recenttrades;
-		}
+
+		
 		public ArrayList<CryptsyOrderBookElem> getSellorders() {
 			return sellorders;
 		}
@@ -177,9 +184,16 @@ public class CryptsyAllMarkets extends AbstractAgilebcData implements UnifiedMar
 		public void setBuyorders(ArrayList<CryptsyOrderBookElem> buyorders) {
 			this.buyorders = buyorders;
 		}
+		public ArrayList<CryptsyTradeElem> getRecenttrades() {
+			return recenttrades;
+		}
+		public void setRecenttrades(ArrayList<CryptsyTradeElem> recenttrades) {
+			this.recenttrades = recenttrades;
+		}
+
 	}
 	
-	public static class TradeElem {
+	public static class CryptsyTradeElem {
 		long id = 0; 
 		Date time = null;
 		Double price = null;

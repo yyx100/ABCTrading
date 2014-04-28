@@ -46,6 +46,8 @@ public class StrategyInvokeHandler extends AbstractHandler {
 	 */
 	public void startStrategyPool () {
 		optStat.startRun();
+		appConf.setOptStat(optStat);
+		
 		stratPool.initPool();
 		stratCntlr.setOptStat(optStat);
 		stratCntlr.setStratPool(stratPool);

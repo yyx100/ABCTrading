@@ -4,7 +4,7 @@ import java.util.Collection;
 
 public interface UnifiedMarketData {
 	
-	public Collection <TradePair> getAllTradePairs();
+	public Collection <TradePairEnh> getAllTradePairs();
 	
 	
 	

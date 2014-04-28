@@ -10,6 +10,10 @@ public class OperationStat {
 	}
 	
 	
+	public OperationStat (ExecutionState startState) {
+		this.execSt = startState;
+	}
+	
 	/**
 	 *    set to specified execution state.  returns false if no change is detected
 	 * @param execSt

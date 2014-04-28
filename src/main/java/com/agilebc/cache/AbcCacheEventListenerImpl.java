@@ -22,7 +22,7 @@ public class AbcCacheEventListenerImpl implements CacheEventListener {
 
 	public void notifyElementPut(Ehcache cache, Element element)
 			throws CacheException {
-		applog.info("Cache Added:{}", element);
+		//applog.info("Cache Added:{}", element);
 	}
 
 	public void notifyElementUpdated(Ehcache cache, Element element)

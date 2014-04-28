@@ -12,7 +12,10 @@ public class Coin extends AbstractAgilebcData {
 		this.coinSym = coinSym;
 		this.coinName = coinName;
 	}
-	
+
+	/**
+	 *   compares only symbol.  name is ignored.
+	 */
 	@Override
 	public boolean equals (Object cmpr) {
 		if (cmpr instanceof Coin) {
