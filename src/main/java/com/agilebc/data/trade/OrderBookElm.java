@@ -1,8 +1,6 @@
 package com.agilebc.data.trade;
 
-import com.agilebc.data.AbstractAgilebcData;
-
-public class OrderBookElm extends AbstractAgilebcData {
+public class OrderBookElm  {
 	private double price 	=	0;
 	private double quantity = 	0;
 	private double total	= 	-0.000135711;
@@ -13,6 +11,12 @@ public class OrderBookElm extends AbstractAgilebcData {
 		this.quantity = quantity;
 	}
 	
+	
+	@Override
+	public String toString() {
+		StringBuffer bf= new StringBuffer().append(price).append("X").append(quantity).append("=").append(total);
+		return bf.toString();
+	}
 	
 	public double getPrice() {
 		return price;

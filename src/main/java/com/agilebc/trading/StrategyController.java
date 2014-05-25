@@ -5,8 +5,9 @@ import org.slf4j.LoggerFactory;
 
 import com.agilebc.data.config.StrategyConfig;
 import com.agilebc.data.trade.StrategyInstancePool;
-import com.agilebc.data.trade.TradeSignalSet;
+import com.agilebc.data.trade.TradeGenSetOrders;
 import com.agilebc.data.vo.OperationStat;
+import com.agilebc.trading.services.MarketDataService;
 import com.agilebc.util.config.GenericConfigLoader;
 
 public abstract class StrategyController implements Runnable {
@@ -17,12 +18,13 @@ public abstract class StrategyController implements Runnable {
 	protected OperationStat optStat = null;
 	protected TradeExecutor trdExec = null;
 	protected StrategyConfig stratConfig = null;
-
+	protected MarketDataService mktDtSrvc = null;
+	
 	/**
 	 *   runs each strategy in a thread
 	 * @return
 	 */
-	public abstract TradeSignalSet runStrategy ();
+	public abstract TradeGenSetOrders runStrategy ();
 	
 	
 	
@@ -30,7 +32,7 @@ public abstract class StrategyController implements Runnable {
 	public void run() {
 		String threadName = Thread.currentThread().getName();
 		applog.info("=== Thread [{}] is running .....", threadName);
-		TradeSignalSet tsSet = null;
+		TradeGenSetOrders tsSet = null;
 		boolean trdAns = false;
 		while (optStat.isRunning() ) {
 			tsSet = runStrategy();
@@ -66,5 +68,19 @@ public abstract class StrategyController implements Runnable {
 
 	public void setStratConfig(StrategyConfig stratConfig) {
 		this.stratConfig = stratConfig;
+	}
+
+
+
+
+	public MarketDataService getMktDtSrvc() {
+		return mktDtSrvc;
+	}
+
+
+
+
+	public void setMktDtSrvc(MarketDataService mktDtSrvc) {
+		this.mktDtSrvc = mktDtSrvc;
 	}
 }

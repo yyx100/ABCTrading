@@ -25,8 +25,7 @@
 			
 		/>
 		<bean id="cryptsyFee" name="cryptsyFee" class="com.agilebc.data.trade.ExchangeFee"
-			p:ratioBuyFee	="0.002"
-			p:ratioSellFee	="0.003" />
+			p:ratioBuyFee	="0.002" p:ratioSellFee	="0.003" p:minFee = "0.00000001"	/>
 	
 	</beans>
 </beans>

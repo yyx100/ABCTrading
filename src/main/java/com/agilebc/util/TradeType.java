@@ -13,7 +13,21 @@ public enum TradeType {
 		this.symb = code;
 	}
 
+	
+	/**
+	 *     
+	 * @return the opposite direction of current type (eg Buy->Sell; Sell->Buy)
+	 */
+	public TradeType getOpposite () {
+		if (direction > 0) {
+			return SELL;
+		}
+		else {
+			return BUY;
+		}
+	}
 
+	
 	public String getTradeTypeSym () {
 		return symb;
 	}

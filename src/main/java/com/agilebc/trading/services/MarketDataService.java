@@ -21,7 +21,7 @@ import com.agilebc.util.config.GenericConfigLoader;
 
 /**
  * 
- * @author yyx100
+ * 
 
  *    most market data service design is a bus architecture that is based on a messaging service such as EMS or ActiveMq.
  *  My design is slightly different.  It still use bus architecture, but I chose to use a memory cache as bus.  
@@ -31,7 +31,8 @@ import com.agilebc.util.config.GenericConfigLoader;
  *  It is plain java pojo api to internal apps. It wraps around the Ehcache (used as the bus) for accessing market 
  *  data in exchange.
  *  
- *   //TODO  I have NOT benched the performance using Ehcache vs ActiveMq.  
+ *  //TODO  I have NOT benched the performance using Ehcache vs ActiveMq.  
+ *  @author yyx100
  */
 public class MarketDataService {
 	public final static String _cnameOrderDepth = "orderdepth";
@@ -146,7 +147,11 @@ public class MarketDataService {
 		return out;
 	}
 
-	 
+
+	public TradePairEnh getMarketDataTradePair (String pairId) {
+		Element elm = allMarketCache.get(pairId); //a dummy call to ensure blocking call will populate the initial cache
+		return (TradePairEnh) elm.getObjectValue();
+	}
 	//--- auto generated ---
 	
 }

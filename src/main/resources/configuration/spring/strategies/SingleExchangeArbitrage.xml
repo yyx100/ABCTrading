@@ -17,20 +17,18 @@
 		p:maxThreads="100"
 		p:shutDownToken="XXX" 		/>
 	
-	
-	
-	
 	<bean id="seaMarketDataService" name="seaMarketDataService" class="com.agilebc.trading.services.MarketDataService"
 		c:exchg="#{singleExchangeArbitrage.exeExch}"
 		c:cachMan-ref="exchangeServiceCacheMan" />
 	
 	<bean id="singleExchgArbiPool" name="singleExchgArbiPool" class="com.agilebc.trading.sea.data.SingleExchgArbiPool" 
 		c:root-ref="seaRootCoin"
-		c:criteria-ref="seaTradeCrt" 
-		c:stratConfig="#{singleExchangeArbitrage}"	/>
+		c:mktDtSrvc-ref="seaMarketDataService"
+		c:criteria-ref="seaTradeCrt" />
 		
 	<bean id="singleExchgArbiCntlr" name="singleExchgArbiCntlr" class="com.agilebc.trading.sea.SingleExchgArbiControllerImpl" 
-		p:stratConfig-ref="singleExchangeArbitrage"	/>
+		p:stratConfig-ref="singleExchangeArbitrage"	
+		p:mktDtSrvc-ref="seaMarketDataService"/>
 
 	<!-- define the root coin (the coin to use as base) -->		
 	<bean id="seaRootCoin" name="seaRootCoin" class="com.agilebc.data.trade.Coin" 
@@ -42,12 +40,15 @@
 		p:maxLinkLength="4"
 		p:minTradePrice="0"
 		p:minTradeVolume="0"
-		p:orderDepthBuffer="1" />
-	
+		p:orderDepthBuffer="1" 
+		p:allowedCoin= "BTC,LTC,DOGE,PPC,NXT" />
+		<!-- BTC,LTC,DOGE,PPC,NXT -->
+		<!-- "42,ALF,AMC,ANC,ARG,ASC,AUR,BCX,BEN,BET,BQC,BTB,BTC,BTE,BTG,BUK,CACH,CAP,CASH,CAT,CGB,CLR,CMC,CNC,COL,CPR,CRC,CSC,DBL,DEM,DGC,DMD,DOGE,DRK,DVC,EAC,ELC,ELP,EMD,EZC,FFC,FLAP,FLO,FRC,FRK,FST,FTC,GDC,GLC,GLD,GLX,GME,HBN,IFC,IXC,JKC,KGC,LEAF,LK7,LKY,LOT,LTC,MAX,MEC,MEM,MEOW,MINT,MNC,MOON,MST,MZC,NAN,NBL,NEC,NET,NMC,NRB,NVC,NXT,ORB,OSC,PHS,PPC,PTS,PXC,PYC,QRK,RED,RPC,RYC,SBC,SMC,SPT,SRC,STR,SXC,TAG,TAK,TEK,TGC,TIPS,TIX,TRC,UNO,UTC,VTC,WDC,XJO,XNC,XPM,YAC,YBC,ZCC,ZET" -->
+		
 	<bean id="seaStartOrder" name="seaStartOrder" class="com.agilebc.data.trade.TradeGenUnitOrder" 
 		p:orderBookDepth="0"
 		p:price="0"
-		p:quantity="1"
+		p:quantity="0.01"
 		p:total="0" />
 	
 	

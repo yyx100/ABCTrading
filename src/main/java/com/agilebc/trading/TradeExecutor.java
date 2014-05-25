@@ -1,8 +1,8 @@
 package com.agilebc.trading;
 
-import com.agilebc.data.trade.TradeSignalSet;
+import com.agilebc.data.trade.TradeGenSetOrders;
 
 public interface TradeExecutor {
 
-	public boolean executeOrder (TradeSignalSet tsSet);
+	public boolean executeOrder (TradeGenSetOrders tsSet);
 }

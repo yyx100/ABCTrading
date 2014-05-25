@@ -46,9 +46,9 @@
 	  	eternal="false"
 	  	maxElementsInMemory="99999"
 	  	timeToIdleSeconds="0"
-	    timeToLiveSeconds="10"  	>
+	    timeToLiveSeconds="9"  	>
   	<cacheEventListenerFactory class="com.agilebc.cache.AbcCacheEventListenerFactory" />
-	<cacheDecoratorFactory class="com.agilebc.cache.AbcCacheDecoratorFactory" properties="refresh=1000,threads=5" />
+	<cacheDecoratorFactory class="com.agilebc.cache.AbcCacheDecoratorFactory" properties="refresh=500,threads=2" />
   </cache>
   
 </ehcache>

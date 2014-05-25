@@ -11,6 +11,11 @@ import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.map.TDoubleDoubleMap;
 import gnu.trove.map.hash.TDoubleDoubleHashMap;
 
+/**
+ *   a data container that represent orders of a either buy or sell.    
+ * @author yyx100
+ *
+ */
 public class OrderDepth {
 	public static Logger applog = LoggerFactory.getLogger(OrderDepth.class);
 
@@ -28,8 +33,10 @@ public class OrderDepth {
 		orderDepth.adjustOrPutValue(price, quantity, quantity);
 	}
 	
+	
 	public void sort () {
 		priceRef.sort();
+		this.sorted = true;
 	}
 	
 	
@@ -70,7 +77,106 @@ public class OrderDepth {
 		
 		return null;
 	}
+	
+	
+	/**
+	 *   in direction: (buy order, loop through sell books for match)
+	 * @param inQuant  total secondary coin amount
+	 * @return traderesult will be total primary coin can be bought. 
+	 */
+	protected TradeResult computeIn (double inQuant ) {
+		if (! sorted) {
+			sort();
+		}
+		
+		boolean ans = false;
+		
+		int dep = priceRef.size();
+		int i = 0;
+		
+		double total = 0;
+		
+		double atPrice = 0;
+		double atQuant = 0;
+		double subTot = 0;
+		
+		double leftTot = inQuant;
+		TradeResult tr = new TradeResult();
+		
+		while (i<dep && ans == false) {
+			atPrice = priceRef.get(i); 
+			atQuant =  orderDepth.get(atPrice);
+			subTot = atPrice * atQuant;
+			
+			if (subTot >= leftTot) {
+				atQuant = leftTot / atPrice;
+				ans = true;
+			}
+			tr.addTradeElement(atPrice, atQuant);
+			
+			total += atQuant;
+			leftTot -= subTot;
+			i++;
+		}
+		tr.setTradeResult(ans, total, i);
+		
+		return tr;
+	}
+	
+	
+	/**
+	 *   out direction: (sell order, loop through buy books for match)
+	 * @param inQuant  total primary coin amount
+	 * @param tr  traderesult for out direction will be total secondary coin can be obtained. 
+	 * @return if order can be filled
+	 */
+	protected TradeResult computeOut (double inQuant) {
+		if (! sorted) {
+			sort();
+		}
+		
+		boolean ans = false;
+		
+		int dep = priceRef.size();
+		int i = dep - 1;
+		
+		double total = 0;
+		
+		double atPrice = 0;
+		double atQuant = 0;
+		double subTot = 0;
+		
+		double leftTot = inQuant;
+		TradeResult tr = new TradeResult();
+		
+		while (i > -1 && ans == false) {
+			atPrice = priceRef.get(i); 
+			atQuant =  orderDepth.get(atPrice);
+			
+			if (atQuant >= leftTot) {
+				subTot = leftTot * atPrice;
+				atQuant = leftTot;
+				ans = true;
+			}
+			else {
+				subTot = atPrice * atQuant;
+			}
+			tr.addTradeElement(atPrice, atQuant);
+			
+			total += subTot;
+			leftTot -= atQuant;
+			i--;
+		}
+		
+		i = dep - i - 1; // buy order is stored in asending orde too, reverse it to be more natual buy decending diection
+		tr.setTradeResult(ans, total, i);
+		
+		return tr;
+	}
+	
 
+	
+	//-------------- auto gen --------
 	public TradeType getTradeDirection() {
 		return tradeDirection;
 	}

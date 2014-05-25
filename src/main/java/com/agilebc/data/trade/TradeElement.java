@@ -15,6 +15,11 @@ public class TradeElement {
 	
 	private Date execTime = null;
 	
+	public TradeElement (double price, double quantity) {
+		this.price = price;
+		this.quantity = quantity;
+	}
+	
 	public TradeElement (String extId, double price, double quant, double total, Date execTime) {
 		this.extTradeId = extId;
 		this.price = price;
@@ -24,11 +29,12 @@ public class TradeElement {
 	}
 	
 	
+	@Override
 	public String toString() {
 		StringBuffer bf = new StringBuffer(String.valueOf(tradeId));
 		bf.append("/").append(extTradeId);
 		
-		bf.append("@").append(price).append("X").append(quantity).append("[").append(DateTimeUtils.DateToString01(execTime)).append("]");
+		bf.append("@").append(price).append("X").append(quantity);//.append("[").append(DateTimeUtils.DateToString01(execTime)).append("]");
 		return bf.toString();
 	}
 	

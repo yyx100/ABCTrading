@@ -8,7 +8,7 @@ import com.agilebc.data.config.CryptoCCYExchange;
 import com.agilebc.data.config.StrategyConfig;
 import com.agilebc.data.trade.LinkedCoinElm;
 import com.agilebc.data.trade.TradeGenUnitOrder;
-import com.agilebc.data.trade.TradeSignalSet;
+import com.agilebc.data.trade.TradeGenSetOrders;
 import com.agilebc.data.trade.TradingBehavior;
 import com.agilebc.data.vo.ExecutionState;
 import com.agilebc.trading.StrategyController;
@@ -25,28 +25,38 @@ public class SingleExchgArbiControllerImpl extends StrategyController {
 	@Qualifier("seaStartOrder")
 	private TradeGenUnitOrder startOrder = null;
 	
-	@Autowired
-	private CacheManager abcCacheMan = null;
+	//@Autowired
+	//private CacheManager abcCacheMan = null;
 	
 	public SingleExchgArbiControllerImpl () {
 	}
 	
 
+	/**
+	 *   runStrategy will run with the same instance of stratege until the strategy find a profitable order then returns
+	 */
 	@Override
-	public TradeSignalSet runStrategy() {
-		LinkedCoinElm startCoin = (LinkedCoinElm) stratPool.getNextStratInstance(); 
+	public TradeGenSetOrders runStrategy() {
+		TradeGenSetOrders rtOrds = null;
+		LinkedCoinElm startCoin = (LinkedCoinElm) stratPool.getNextStratInstance();
+		
 		try {
 			SingleExchgArbiSeeker seaSeeker = new SingleExchgArbiSeeker(startCoin, startOrder, 
 					stratConfig.getExeExch().getExchFee(), 
 					stratConfig.getTradeCrt(), 
 					TradingBehavior.valueOf( stratConfig.getTradingBehaviorName()),
-					abcCacheMan) ;
+					mktDtSrvc) ;
 			
 			while (optStat.getExecutionState().equals(ExecutionState.RUN)) {
-				seaSeeker.seekingAlpha();
 				applog.info("=== [running strategy] instance:[{}] with startOrder:[{}]", startCoin.getChainStr(), startOrder);
+				rtOrds = seaSeeker.seekingAlpha();
 				
-				Thread.sleep(3000);
+				if (rtOrds == null) {
+					Thread.sleep(500);
+				}
+				else {
+					break;
+				}
 			}
 		}
 		catch (Exception e) {
@@ -54,10 +64,10 @@ public class SingleExchgArbiControllerImpl extends StrategyController {
 		}
 		finally {
 			String out = stratPool.releaseStratInstance(startCoin);
-			applog.info("===> Strategy instance:[{}] returned.", startCoin.getChainStr());
+			applog.info("===> Strategy instance:[{}] returning. instance returned status:[{}].", startCoin.getChainStr(), out);
 		}
 			
-		return null;
+		return rtOrds;
 	}
 
 

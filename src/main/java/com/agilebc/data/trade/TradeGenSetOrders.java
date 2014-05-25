@@ -2,7 +2,7 @@ package com.agilebc.data.trade;
 
 import com.agilebc.data.AbstractAgilebcData;
 
-public class TradeSignalSet extends AbstractAgilebcData {
+public class TradeGenSetOrders extends AbstractAgilebcData {
 	private TradeGenUnitOrder[] orders = null;
 
 	public TradeGenUnitOrder[] getOrders() {

@@ -12,6 +12,7 @@ import com.agilebc.util.TradeType;
  */
 public class TradeGenUnitOrder {
 
+
 	private String tradePairId 		= null;
 	private TradeType tradeType 	= null;
 	
@@ -81,5 +82,5 @@ public class TradeGenUnitOrder {
 		this.orderBookDepth = orderBookDepth;
 	}
 	
-	
+
 }

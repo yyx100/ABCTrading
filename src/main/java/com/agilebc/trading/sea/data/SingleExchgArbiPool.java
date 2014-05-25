@@ -9,22 +9,13 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
-import com.agilebc.data.config.StrategyConfig;
 import com.agilebc.data.trade.Coin;
-import com.agilebc.data.trade.Exchange;
+import com.agilebc.data.trade.LinkedCoinElm;
 import com.agilebc.data.trade.StrategyInstancePool;
+import com.agilebc.data.trade.TradePair;
 import com.agilebc.data.trade.TradePairEnh;
 import com.agilebc.data.trade.TradingCriteria;
-import com.agilebc.data.trade.LinkedCoinElm;
-import com.agilebc.data.trade.TradePair;
-import com.agilebc.feed.dao.ExchangeTradingAPI;
 import com.agilebc.trading.services.MarketDataService;
 import com.agilebc.util.TradeType;
 import com.agilebc.util.config.GenericConfigLoader;
@@ -54,9 +45,10 @@ public class SingleExchgArbiPool implements StrategyInstancePool <LinkedCoinElm>
 	private Map<LinkedCoinElm /*head of trade path*/, String /* leasor thread id*/> leasedArbitragePath = new HashMap<LinkedCoinElm, String>(); 
 	
 	private double _defaultTradeQuantity = 1;
-	private StrategyConfig stratConfig = null;
+	//private StrategyConfig stratConfig = null;
 	private MarketDataService mktDataSrvc =  null;
 	
+	/*
 	public SingleExchgArbiPool (StrategyConfig stratConfig, Coin root,  TradingCriteria criteria) {
 		this.stratConfig = stratConfig;
 		this.root = root;
@@ -68,7 +60,20 @@ public class SingleExchgArbiPool implements StrategyInstancePool <LinkedCoinElm>
 			this.criteria = criteria;
 		}
 	}
-
+	*/
+	public SingleExchgArbiPool (Coin root, MarketDataService mktDtSrvc, TradingCriteria criteria) {
+		this.root = root;
+		this.mktDataSrvc = mktDtSrvc;
+		
+		if (criteria == null) {
+			this.criteria = new TradingCriteria();
+		}
+		else {
+			this.criteria = criteria;
+		}
+	}
+	
+	
 	
 	public boolean initPool () {
 		init();
@@ -127,8 +132,11 @@ public class SingleExchgArbiPool implements StrategyInstancePool <LinkedCoinElm>
 	}
 	
 	
-	
-	public void recursivePathfinder (LinkedCoinElm currLink) {
+	/**
+	 *   recursively find trade path.  pathes are saved in tradePaths
+	 * @param currLink
+	 */
+	private void recursivePathfinder (LinkedCoinElm currLink) {
 		if (validateLinkCondition(currLink)) {
 			Set<TradePair> possibleTargets = coinPath.get(currLink.getCurrCoin());
 			
@@ -190,7 +198,12 @@ public class SingleExchgArbiPool implements StrategyInstancePool <LinkedCoinElm>
 		}
 	}
 	
-	
+	/**
+	 *   profit estimate is based on 0.002 buy commission and 0.003 sell commission 
+	 * @param currLnk
+	 * @param inQuant
+	 * @return
+	 */
 	public double estimateProfit(LinkedCoinElm currLnk, double inQuant ) {
 		TradeType trdTy = currLnk.getNextAction();
 		Coin primCoin = null;  
@@ -280,27 +293,34 @@ public class SingleExchgArbiPool implements StrategyInstancePool <LinkedCoinElm>
 			Coin pc = tp.getPrimary();
 			Coin sc = tp.getSecondary();
 			
-			//--- primary coin---
-			Set <TradePair> inPairs = null;
-			if (coinPath.containsKey(pc)){
-				inPairs = coinPath.get(pc);
+			if (criteria.isAllowed(pc) && 
+					criteria.isAllowed(sc)) {
+				applog.info("=== P-coin:{}/S-coin:{} have been accepted.====>", pc, sc);
+				//--- primary coin---
+				Set <TradePair> inPairs = null;
+				if (coinPath.containsKey(pc)){
+					inPairs = coinPath.get(pc);
+				}
+				else {
+					inPairs = new HashSet<TradePair>();
+					coinPath.put(pc, inPairs);
+				}
+				inPairs.add(tp);
+				//--- secondary coin---
+				Set <TradePair> outPairs = null;
+				if (coinPath.containsKey(sc)){
+					outPairs = coinPath.get(sc);
+					
+				}
+				else {
+					outPairs = new HashSet<TradePair>();
+					coinPath.put(sc, outPairs);
+				}
+				outPairs.add(tp);
 			}
 			else {
-				inPairs = new HashSet<TradePair>();
-				coinPath.put(pc, inPairs);
+				applog.info("=== P-coin:{}/S-coin:{} have been filtered out!====>", pc, sc);
 			}
-			inPairs.add(tp);
-			//--- secondary coin---
-			Set <TradePair> outPairs = null;
-			if (coinPath.containsKey(sc)){
-				outPairs = coinPath.get(sc);
-				
-			}
-			else {
-				outPairs = new HashSet<TradePair>();
-				coinPath.put(sc, outPairs);
-			}
-			outPairs.add(tp); 
 		}
 	}
 	

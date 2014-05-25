@@ -1,5 +1,8 @@
 package com.agilebc.data.trade;
 
+import java.util.HashMap;
+import java.util.HashSet;
+
 
 public class TradingCriteria {
 
@@ -18,8 +21,40 @@ public class TradingCriteria {
 	 */
 	private int orderDepthBuffer = 0;   
 	
+	/**
+	 *  LTC,BTC,DOGE , delimited
+	 */
+	private String allowedCoin = null;
+	private boolean allowedDone = false;
+	private HashSet<Coin> allowedHash = null;
 	
 	
+	public synchronized boolean isAllowed (Coin cnk) {
+		boolean ans = false;
+
+		if (allowedCoin == null || "".equals(allowedCoin)) {
+			ans = true;
+		}
+		else {
+			if (!allowedDone) {
+				parseAllowedCoins();
+			}
+	
+			ans = allowedHash.contains(cnk);
+		}
+		return ans;
+	}
+	
+	
+	public synchronized void parseAllowedCoins () {
+		String[] tks = allowedCoin.toUpperCase().split(",");
+		allowedHash = new HashSet<Coin>(tks.length);
+		for (String tk : tks) {
+			allowedHash.add(new Coin(tk.trim(), ""));
+		}
+	}
+	
+	//--- auto generated ---
 	
 	public double getMinTradeVolume() {
 		return minTradeVolume;
@@ -47,6 +82,12 @@ public class TradingCriteria {
 	
 	public void setOrderDepthBuffer(int orderDepthBuffer) {
 		this.orderDepthBuffer = orderDepthBuffer;
+	}
+	public String getAllowedCoin() {
+		return allowedCoin;
+	}
+	public void setAllowedCoin(String allowedCoin) {
+		this.allowedCoin = allowedCoin;
 	}
 	
 	

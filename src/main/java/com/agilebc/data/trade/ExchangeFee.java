@@ -8,7 +8,7 @@ public class ExchangeFee {
 	private double fixedBuyFee		= 0;
 	private double fixedSellFee		= 0;
 	
-	
+	private double minFee = 0.00000001;
 	
 	public double getRatioBuyFee() {
 		return ratioBuyFee;
@@ -33,6 +33,12 @@ public class ExchangeFee {
 	}
 	public void setFixedSellFee(double fixedSellFee) {
 		this.fixedSellFee = fixedSellFee;
+	}
+	public double getMinFee() {
+		return minFee;
+	}
+	public void setMinFee(double minFee) {
+		this.minFee = minFee;
 	}
 	
 	

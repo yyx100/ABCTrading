@@ -1,27 +1,18 @@
 package com.agilebc.trading.services;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 import java.util.List;
 
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-import net.sf.ehcache.config.Configuration;
-import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
-
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.Cache;
-import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.agilebc.data.trade.TradePair;
 import com.agilebc.data.trade.TradePairEnh;
-import com.agilebc.util.TradeType;
 import com.agilebc.util.config.GenericConfigLoader;
 
 
@@ -41,6 +32,13 @@ public class SeaMktDataServiceTest {
 	
 	
 	@Test
+	public void testMatchDiffApiCalls() {
+		srvc.subscribe("LTC|BTC");
+		
+		
+	}
+	
+	//@Test
 	public void testMarktSubscription () {
 		for (int i=1; i < 30; i++) {
 			Collection<TradePairEnh> tpes = srvc.getAllMarketTradePairs();
